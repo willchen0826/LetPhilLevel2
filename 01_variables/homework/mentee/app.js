@@ -22,6 +22,10 @@
 //   isStudent   → true or false
 //
 // Log all four to the console.
+const fullName = "Will Chen";
+let age = 25;
+let city = "Toronto";
+let isStudent = false
 
 // ----------------------------------------------------------
 // TASK 2 — Update what can change
@@ -32,6 +36,14 @@
 //
 // Then try to reassign fullName.
 // Read the error, then comment that line out.
+city = "Vancouver";
+isStudent = true;
+console.log(city);
+console.log(isStudent);
+
+// fullName = "New Name";
+//  Uncaught TypeError: Assignment to constant variable.
+
 
 // ----------------------------------------------------------
 // TASK 3 — Undefined in the wild
@@ -41,7 +53,11 @@
 //
 // Now assign it a movie title.
 // Log it again.
+let favoriteMovie;
+console.log(favoriteMovie); // undefined
 
+favoriteMovie = "Inception";
+console.log(favoriteMovie);
 // ----------------------------------------------------------
 // TASK 4 — Build a product listing
 // ----------------------------------------------------------
@@ -55,6 +71,17 @@
 //
 // Log each variable on its own line.
 // Then log: productName + " by " + productBrand + " — $" + productPrice
+const productName = "SuperSweetJam";
+const productBrand = "JamCo";
+const productPrice = 19.99;
+let inStock = true;
+
+console.log(productName);
+console.log(productBrand);
+console.log(productPrice);
+console.log(inStock);
+
+console.log(productName + " by " + productBrand + " — $" + productPrice);
 
 // ----------------------------------------------------------
 // TASK 5 — Stock status update
@@ -66,6 +93,11 @@
 // Read the error and comment the line out.
 // Why did this fail but inStock worked?
 // Write your answer as a comment.
+inStock = false;
+console.log("In stock: " + inStock);
+
+// productName = "NewProduct"; // Uncaught TypeError: Assignment to constant variable.
+// This failed because productName was declared as a const, which cannot be reassigned. inStock was declared as a let, which can be reassigned.
 
 // ----------------------------------------------------------
 // TASK 6 — Fix the bad names
@@ -77,6 +109,16 @@
 //   my score      → fix it
 //   X             → rename to something descriptive, then declare it
 //   GaMeLeVeL     → fix the casing
+
+secondPlayer = "Alice";
+let myScore = 100;
+let playerX = "Bob";
+let gameLevel = 5;
+
+console.log(secondPlayer);
+console.log(myScore);
+console.log(playerX);
+console.log(gameLevel);
 
 // ----------------------------------------------------------
 // TASK 7 — Two-step declaration
@@ -91,7 +133,14 @@
 // Log it.
 //
 // You should see three console lines: undefined → 500 → 750
+let highScore;
+console.log(highScore);
 
+highScore = 500;
+console.log(highScore);
+
+highScore = 750;
+console.log(highScore);
 // ----------------------------------------------------------
 // TASK 8 — Connect the variables
 // ----------------------------------------------------------
@@ -102,6 +151,12 @@
 //
 // Log: appName + " v" + version + " — built by " + authorName
 // Expected format: "TaskMaster v3 — built by [your name]"
+
+const appName = "TaskMaster";
+const version = 3;
+const authorName = "Your Name";
+
+console.log(appName + " v" + version + " — built by " + authorName);
 
 // ----------------------------------------------------------
 // ⭐ STRETCH GOAL
@@ -115,3 +170,13 @@
 // Then reassign currentYear... wait, can you? Why not?
 // Write the answer as a comment.
 // What keyword would you need if currentYear could change?
+
+const startYear = 2020;
+const currentYear = 2025;
+let yearsRunning = currentYear - startYear;
+
+console.log(appName + " has been running for " + yearsRunning + " years.");
+
+
+// currentYear = 2026; // Uncaught TypeError: Assignment to constant variable.
+// This cannot be reassigned because currentYear was declared as a const. If we wanted to allow it to change, we would need to declare it with let instead of const.
