@@ -17,8 +17,12 @@ for (let i = 1; i < 10; i++) {
 }
 
 // What's wrong ↓
+// because the loop condition is i < 10, which means it will stop when i reaches 10. To include 10, we should change the condition to i <= 10.
 
 // Your fix ↓
+for (let i = 1; i <= 10; i++) {
+  console.log(i);
+}
 
 
 // ----------------------------------------------------------
@@ -34,8 +38,13 @@ for (let i = 1; i <= 5; i++) {
 console.log("Sum: " + total);
 
 // What's wrong ↓
-
+// because the variable total is declared inside the loop, it gets reset to 0 on each iteration. We need to declare total outside the loop so that it accumulates the sum across iterations.
 // Your fix ↓
+let total = 0;
+for (let i = 1; i <= 5; i++) {
+  total += i;
+}
+console.log("Sum: " + total);
 
 
 // ----------------------------------------------------------
@@ -56,7 +65,13 @@ for (let i = 1; i <= 10; i++) {
 console.log("Done!");
 
 // Bug 1 ↓
-
+// The condition in the if statement is checking for even numbers (i % 2 === 0) instead of odd numbers. We should change it to check for odd numbers (i % 2 !== 0).
 // Bug 2 ↓
-
+// The continue statement is unnecessary here. It causes the loop to skip the console.log for odd numbers. We can remove the else block entirely and just log the odd numbers directly.
 // Your fix ↓
+for (let i = 1; i <= 10; i++) {
+  if (i % 2 !== 0) {
+    console.log(i);
+  }
+}
+console.log("Done!");
