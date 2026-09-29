@@ -82,6 +82,25 @@ const orders = [
 //   + " | $" + order.total
 //   + " | " + order.status.toUpperCase()
 
+// orders.forEach(function (order) {
+//   console.log("#" + order.id + " | " + order.customer
+//   + " | $" + order.total
+//   + " | " + order.status.toUpperCase());
+// })
+
+orders.forEach((order) =>
+  console.log(
+    "#" +
+      order.id +
+      " | " +
+      order.customer +
+      " | $" +
+      order.total +
+      " | " +
+      order.status.toUpperCase(),
+  ),
+);
+
 // ----------------------------------------------------------
 // TASK 2 — Build receipt strings (map)
 // ----------------------------------------------------------
@@ -92,6 +111,42 @@ const orders = [
 //
 // Log receipts.length to confirm it matches orders.length.
 // Use forEach on receipts to log each one.
+const recipts = orders
+  .map((order) => {
+    return (
+      "Order #" +
+      order.id +
+      " — " +
+      order.customer +
+      " — $" +
+      order.total +
+      " (" +
+      order.items +
+      " item(s))"
+    );
+  })
+  .forEach((reciptItem) => console.log(reciptItem));
+
+const reciptss = orders.map((order) => {
+  return (
+    "Order #" +
+    order.id +
+    " — " +
+    order.customer +
+    " — $" +
+    order.total +
+    " (" +
+    order.items +
+    " item(s))"
+  );
+});
+
+console.log(
+  "length of the recipts: " +
+    reciptss.length +
+    "; If it is same length as Orders: " +
+    (reciptss.length == orders.length ? "True" : "False"),
+);
 
 // ----------------------------------------------------------
 // TASK 3 — Build order summary objects (map)
@@ -101,6 +156,14 @@ const orders = [
 //   { id: order.id, customer: order.customer, total: order.total }
 //
 // Log summaries.
+
+const summaries = orders.map((order) => ({
+  id: order.id,
+  customer: order.customer,
+  total: order.total,
+}));
+
+console.log(summaries);
 
 // ----------------------------------------------------------
 // TASK 4 — Filter by status (filter)
@@ -114,6 +177,14 @@ const orders = [
 //   "Pending:   " + pendingOrders.length
 //   "Cancelled: " + cancelledOrders.length
 
+const deliveredOrder = orders.filter((order) => order.status === "delivered");
+const pendingdOrder = orders.filter((order) => order.status === "pending");
+const cancelledOrder = orders.filter((order) => order.status === "cancelled");
+
+console.log("Delivered: " + deliveredOrder.length);
+console.log("Pending:   " + pendingdOrder.length);
+console.log("Cancelled: " + cancelledOrder.length);
+
 // ----------------------------------------------------------
 // TASK 5 — High value orders (filter + map chained)
 // ----------------------------------------------------------
@@ -123,6 +194,13 @@ const orders = [
 //
 // Log: "High value customers: " + highValueCustomers
 
+const highValueCustomers = orders
+  .filter((order) => order.total > 100)
+  .map((o) => o.customer);
+
+console.log("High value customers: " + highValueCustomers);
+
+// ------
 // ----------------------------------------------------------
 // TASK 6 — Find a specific order (find)
 // ----------------------------------------------------------
@@ -134,6 +212,21 @@ const orders = [
 // Store it in missingOrder.
 // Log missingOrder.
 // Write a comment: what does find return when nothing matches?
+
+const foundOrder = orders.find((order) => order.id === 1005);
+console.log("Found: " + foundOrder.customer + " — $" + foundOrder.total);
+
+const missingOrder = orders.find((order) => order.id === 9999);
+console.log(missingOrder);
+
+// {
+//   id: 1007,
+//   customer: "Ava Johnson",
+//   total: 55.25,
+//   status: "pending",
+//   items: 2,
+//   isPriority: false,
+// },
 
 // ----------------------------------------------------------
 // TASK 7 — Ask questions about the data (some + every)
@@ -157,6 +250,22 @@ const orders = [
 //   Store in allPriorityMultiItem.
 //   Log: "All priority multi-item: " + allPriorityMultiItem // prediction:
 
+const hasPriorityOrder = orders.some((order) => order.isPriority == true);
+console.log("Has priority order: " + hasPriorityOrder);
+
+const hasHighValueOrder = orders.some((order) => order.total > 300);
+console.log("Has $300+ order: " + hasHighValueOrder);
+
+const allActive = orders.every(
+  (order) => order.status === "pending" || order.status === "delivered",
+);
+console.log("All active: " + allActive);
+
+const allPriorityMultiItem = orders
+  .filter((order) => order.isPriority == true)
+  .every((o) => o.items > 1);
+console.log("All priority multi-item: " + allPriorityMultiItem);
+
 // ----------------------------------------------------------
 // TASK 8 — Calculate totals (reduce)
 // ----------------------------------------------------------
@@ -172,6 +281,17 @@ const orders = [
 // Calculate and log the average order value:
 //   const averageOrder = totalRevenue / orders.length
 //   Log: "Average order value: $" + averageOrder
+
+const totalRevenue = orders.reduce(function (acc, order) {
+  return acc + order.total;
+}, 0);
+console.log("Total revenue: $" + totalRevenue.toFixed(2));
+
+const totalItems = orders.reduce((acc, order) => acc + order.items, 0);
+console.log("Total items ordered: " + totalItems);
+
+const averageOrder = totalRevenue / orders.length;
+console.log("Average order value: $" + averageOrder.toFixed(2));
 
 // ----------------------------------------------------------
 // TASK 9 — Connect the dots (filter + reduce)
@@ -189,6 +309,18 @@ const orders = [
 // Then log:
 //   "Unconfirmed revenue: $" + pendingRevenue
 //   (This is money that hasn't been secured yet)
+
+const deliveredRevenue = orders
+  .filter((order) => order.status == "delivered")
+  .reduce((acc, o) => acc + o.total, 0);
+console.log("Delivered revenue: $" + deliveredRevenue);
+
+const pendingRevenue = orders
+  .filter((order) => order.status == "pending")
+  .reduce((acc, o) => acc + o.total, 0);
+console.log("Pending revenue: $" + pendingRevenue);
+
+console.log("Unconfirmed revenue: $" + pendingRevenue);
 
 // ----------------------------------------------------------
 // TASK 10 — Full pipeline (all methods)
@@ -214,6 +346,32 @@ const orders = [
 //
 // Step 5: use forEach on priorityDisplay to log each line
 
+const priorityOrders = orders.filter((order) => order.isPriority == true);
+
+const allPriorityDelivered = priorityOrders.every(
+  (o) => o.status == "delivered",
+);
+console.log("All priority delivered: " + allPriorityDelivered);
+
+const priorityRevenue = priorityOrders.reduce(
+  (acc, order) => acc + order.total,
+  0,
+);
+console.log("Priority revenue: $" + priorityRevenue);
+
+const priorityDisplay = priorityOrders.map(
+  (order) => "⚡ #" + order.id + " " + order.customer + " — $" + order.total,
+);
+priorityDisplay.forEach((item) => console.log(item));
+
+// {
+//   id: 1007,
+//   customer: "Ava Johnson",
+//   total: 55.25,
+//   status: "pending",
+//   items: 2,
+//   isPriority: false,
+// },
 // ----------------------------------------------------------
 // ⭐ STRETCH GOAL — Status report object (reduce)
 // ----------------------------------------------------------
@@ -237,3 +395,25 @@ const orders = [
 // Log report.
 //
 // Hint: inside the reduce callback, update acc properties and return acc.
+
+const accumulator = {
+  totalOrders: 0,
+  totalRevenue: 0,
+  deliveredCount: 0,
+  pendingCount: 0,
+  cancelledCount: 0,
+  priorityCount: 0,
+};
+
+const report = orders.reduce((acc, order) => {
+  acc.totalOrders += 1;
+  acc.totalRevenue += order.total;
+  order.status === "delivered" ? acc.deliveredCount++ : acc.deliveredCount;
+  order.status === "pending" && acc.pendingCount++;
+  order.status === "cancelled" && acc.cancelledCount++;
+  order.isPriority === true && acc.priorityCount++;
+
+  return acc;
+}, accumulator);
+
+console.log("report is  ", report);
