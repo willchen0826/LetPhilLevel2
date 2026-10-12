@@ -82,6 +82,23 @@ const users = [
 // Call it twice with different data. Log both results.
 // Write a comment: why is isPremium = false a good default here?
 
+function newUser(username, email, age, isPremium = false) {
+  return {
+    id: Date.now(),
+    username: username,
+    email: email,
+    age: age,
+    isPremium: isPremium,
+  };
+}
+
+const user1 = newUser("willchen", "wc123@qq.com", 18);
+const user2 = newUser("amy", "amy@qq.com", 20, true);
+
+console.log("user1: ", user1);
+console.log("user2: ", user2);
+// isPremium defaults to false because most new users are not premium.
+
 // ----------------------------------------------------------
 // TASK 2 — isValidUser  [FUNCTION EXPRESSION]
 // ----------------------------------------------------------
@@ -104,6 +121,16 @@ const users = [
 // Write a comment: why is isValidUser a function EXPRESSION
 // instead of a DECLARATION here?
 
+const isValidUser = function (user) {
+  return user.username.length > 0 && user.email.length > 0 && user.age >= 13;
+};
+
+users.forEach((user) =>
+  console.log(user.username + " valid: " + isValidUser(user)),
+);
+
+// isValidUser is a function expression because an anonymous function is assigned to the const variable isValidUser.
+
 // ----------------------------------------------------------
 // TASK 3 — formatUserDisplay  [ARROW FUNCTION + TERNARY]
 // ----------------------------------------------------------
@@ -124,6 +151,19 @@ const users = [
 //
 // Write a comment: why is an arrow function a good fit here?
 
+const formatUserDisplay = (user) =>
+  user.username +
+  " | " +
+  user.email +
+  " | " +
+  (user.isPremium ? "⭐ Premium" : "Free") +
+  " | Age: " +
+  user.age;
+
+users.forEach((user) => console.log(formatUserDisplay(user)));
+// An arrow function is a good fit here because the function is short
+// and only returns one expression, so implicit return keeps the code concise.
+
 // ----------------------------------------------------------
 // TASK 4 — getUserById  [FUNCTION DECLARATION + TERNARY]
 // ----------------------------------------------------------
@@ -136,6 +176,15 @@ const users = [
 //
 // Test with id 3 (should find Zoe) and id 99 (should return null).
 // Log both results.
+
+function getUserById(id, userList = users) {
+  const user = userList.find((user) => user.id == id);
+  return user ? user : null;
+}
+
+// const test1 = getUserById(3);
+console.log("test1: ", getUserById(3));
+console.log("test2: ", getUserById(99));
 
 // ----------------------------------------------------------
 // TASK 5 — filterByAge  [FUNCTION EXPRESSION + DEFAULT PARAM]
@@ -153,6 +202,14 @@ const users = [
 //   filterByAge(users, 13, 17)   → teens
 //
 // For each result, log the count and usernames using map.
+
+const filterByAge = function (userList, minAge, maxAge = 100) {
+  return userList.filter((user) => user.age >= minAge && user.age <= maxAge);
+};
+
+console.log("filterByAge 18: ", filterByAge(users, 18));
+console.log("filterByAge 18, maxage 25: ", filterByAge(users, 18, 25));
+console.log("filterByAge 13, maxage 17: ", filterByAge(users, 13, 17));
 
 // ----------------------------------------------------------
 // TASK 6 — getAccountStats  [FUNCTION DECLARATION]
@@ -178,6 +235,28 @@ const users = [
 // Write a comment: what does passing isValidUser (without ())
 // to filter do differently than passing isValidUser()?
 
+function getAccountStats(userList) {
+  const totalLogins = userList.reduce(
+    (acc, user) => (acc += user.loginCount),
+    0,
+  );
+  const validUser = userList.filter((user) => isValidUser(user));
+
+  return {
+    totalUsers: userList.length,
+    totalLogins: totalLogins,
+    premiumCount: userList.reduce(
+      (acc, user) => (acc += 1 && user.isPremium),
+      0,
+    ),
+    validCount: validUser.length,
+    avgLogins: totalLogins / userList.length,
+  };
+}
+
+const task6 = getAccountStats(users);
+console.log("task6: ", task6);
+
 // ----------------------------------------------------------
 // TASK 7 — promoteUser  [ARROW FUNCTION]
 // ----------------------------------------------------------
@@ -193,6 +272,24 @@ const users = [
 // Write a comment: why does mutating user.isPremium inside an
 // arrow function affect the original object?
 // (Hint: objects vs primitives — pass by reference vs value)
+
+const promoterUser = (user) => {
+  user.isPremium = true;
+  return user;
+};
+
+const user = users.find((u) => u.id == 2);
+console.log("task7 find the user with id 2: ", user);
+
+promoterUser(user);
+
+console.log(
+  "after promote, find the user with id 2",
+  users.find((u) => u.id == 2),
+);
+
+// Mutating user.isPremium affects the original object because
+// the user variable references the same object stored in the users array.
 
 // ----------------------------------------------------------
 // TASK 8 — processAccounts  [FUNCTION DECLARATION composing all styles]
@@ -215,6 +312,28 @@ const users = [
 // Call processAccounts(users). Log the result.
 // forEach through result.displayList logging each line.
 
+function processAccounts(userList) {
+  const validUsers = userList.filter((u) => isValidUser(u));
+  // const validUsers = userList.filter(isValidUser);
+  const adultUsers = filterByAge(validUsers, 18);
+  const displayList = adultUsers.map((u) => formatUserDisplay(u));
+  const stats = getAccountStats(userList);
+  return { displayList, stats, skipped: userList.length - validUsers.length };
+}
+
+const result = processAccounts(users);
+console.log("Task 8 processAccounts: ", result);
+
+result.displayList.forEach((u) => console.log(u));
+
+//  {
+//     id: 1,
+//     username: "alexdev",
+//     email: "alex@email.com",
+//     age: 28,
+//     isPremium: true,
+//     loginCount: 142,
+//   },
 // ----------------------------------------------------------
 // ⭐ STRETCH GOAL — searchUsers  [FUNCTION EXPRESSION]
 // ----------------------------------------------------------
@@ -230,3 +349,14 @@ const users = [
 //   searchUsers(users, "a")               → all with "a" in username
 //
 // Write a comment: why must you use u[field] instead of u.field?
+
+function searchUsers(userList, query, field = "username") {
+  return userList.filter((u) => u[field].includes(query));
+}
+
+console.log("STRETCH GOAL searchUsers(users, dev)", searchUsers(users, "dev"));
+console.log(
+  "STRETCH GOAL searchUsers(users, email.com, email)",
+  searchUsers(users, "email.com", "email"),
+);
+console.log("STRETCH GOAL searchUsers(users, a) ", searchUsers(users, "a"));

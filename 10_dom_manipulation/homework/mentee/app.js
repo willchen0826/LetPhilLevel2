@@ -92,8 +92,14 @@ const boardName = "Sprint 12 — Task Board";
 // Call renderHeader(tasks) at the bottom.
 
 function renderHeader(taskList) {
-  // your code here
+  const boardTitle = document.getElementById("board-title");
+  boardTitle.textContent = boardName;
+
+  const taskCount = document.getElementById("task-count");
+  taskCount.textContent = taskList.length + " tasks";
 }
+
+renderHeader(tasks);
 
 // ----------------------------------------------------------
 // TASK 2 — createTaskCard  (returns a DOM element)
@@ -126,7 +132,33 @@ function renderHeader(taskList) {
 // Task 3 will handle placing it in the right column.
 
 function createTaskCard(task) {
-  // your code here
+  const li = document.createElement("li");
+  li.classList.add("task-card");
+  li.dataset.id = task.id;
+
+  const p = document.createElement("p");
+  p.classList.add("task-title");
+  p.textContent = task.title;
+
+  const div = document.createElement("div");
+  div.classList.add("task-meta");
+
+  const prioritySpan = document.createElement("span");
+  prioritySpan.textContent = task.priority.toUpperCase();
+  prioritySpan.classList.add("priority-" + task.priority);
+
+  const assigneeSpan = document.createElement("span");
+  assigneeSpan.textContent = "👤 " + task.assignee;
+
+  div.append(prioritySpan, assigneeSpan);
+
+  li.append(p);
+  li.append(div);
+
+  if (task.status === "done") {
+    li.classList.add("completed");
+  }
+  return li;
 }
 
 // ----------------------------------------------------------
@@ -150,8 +182,32 @@ function createTaskCard(task) {
 
 function renderBoard(taskList) {
   // your code here
+  const todoList = document.querySelector("#list-todo");
+  const inprogressList = document.querySelector("#list-inprogress");
+  const doneList = document.querySelector("#list-done");
+
+  taskList.forEach((task) => {
+    const element = createTaskCard(task);
+
+    if (task.status === "todo") {
+      todoList.append(element);
+    } else if (task.status === "inprogress") {
+      inprogressList.append(element);
+    } else if (task.status === "done") {
+      doneList.append(element);
+    }
+  });
 }
 
+renderBoard(tasks);
+
+// {
+//     id: 8,
+//     title: "Update dependencies",
+//     assignee: "Maya",
+//     priority: "low",
+//     status: "todo",
+//   },
 // ----------------------------------------------------------
 // TASK 4 — updateCounts
 // ----------------------------------------------------------
@@ -171,7 +227,17 @@ function renderBoard(taskList) {
 
 function updateCounts(taskList) {
   // your code here
+  const completedTasks = taskList.filter((task) => task.status === "done");
+  const pendingTasks = taskList.filter((task) => task.status !== "done");
+
+  const completedCount = document.getElementById("completed-count");
+  completedCount.textContent = "✅ " + completedTasks.length + " done";
+
+  const pendingCount = document.getElementById("pending-count");
+  pendingCount.textContent = "⏳ " + pendingTasks.length + " pending";
 }
+
+updateCounts(tasks);
 
 // ----------------------------------------------------------
 // TASK 5 — addRemoveButtons
@@ -191,7 +257,13 @@ function updateCounts(taskList) {
 // For now just build and attach the buttons so they appear.
 
 function addRemoveButtons() {
-  // your code here
+  const taskCard = document.querySelectorAll(".task-card");
+  taskCard.forEach((task) => {
+    const button = document.createElement("button");
+    button.classList.add("remove-btn");
+    button.textContent = "✕";
+    task.append(button);
+  });
 }
 
 // ----------------------------------------------------------
@@ -209,7 +281,8 @@ function addRemoveButtons() {
 // This makes high-priority labels appear bolder.
 
 function highlightHighPriority() {
-  // your code here
+  const priorityHigh = document.querySelectorAll(".priority-high");
+  priorityHigh.forEach((e) => (e.style.fontWeight = "800"));
 }
 
 // ----------------------------------------------------------
@@ -233,8 +306,24 @@ function highlightHighPriority() {
 // Watch a new card appear in the To Do column with a ✕ button.
 
 function addNewTask(title, assignee, priority = "medium", status = "todo") {
-  // your code here
+  const newTask = { id: Date.now(), title, assignee, priority, status };
+  tasks.push(newTask);
+  const card = createTaskCard(newTask);
+  let targetList;
+  if (status === "todo") {
+    targetList = document.getElementById("list-todo");
+  } else if (status == "done") {
+    targetList = document.getElementById("list-done");
+  } else if (status === "inprogress") {
+    targetList = document.getElementById("list-inprogress");
+  }
+  targetList.append(card);
+
+  updateCounts(tasks);
+  addRemoveButtons();
+  highlightHighPriority();
 }
+addNewTask("Write unit tests", "Carlos", "high");
 
 // ----------------------------------------------------------
 // TASK 8 — Connect the dots: renderAll
@@ -253,8 +342,14 @@ function addNewTask(title, assignee, priority = "medium", status = "todo") {
 // each function individually.
 
 function renderAll() {
-  // your code here
+  renderHeader(tasks);
+  renderBoard(tasks);
+  updateCounts(tasks);
+  addRemoveButtons();
+  highlightHighPriority();
 }
+
+renderAll();
 
 // ----------------------------------------------------------
 // ⭐ STRETCH GOAL — markComplete
@@ -279,3 +374,17 @@ function renderAll() {
 // ============================================================
 // CALL YOUR FUNCTIONS HERE
 // ============================================================
+function markComplete(taskID) {
+  const matchingTask = tasks.find((t) => t.id === taskID);
+  if (matchingTask) {
+    matchingTask.status = "done";
+  }
+  const taskCard = document.querySelector("[data-id='" + taskID + "']");
+  if (taskCard) {
+    taskCard.classList.add("completed");
+    document.getElementById("list-done").appendChild(taskCard);
+  }
+  updateCounts(tasks);
+}
+
+markComplete(1);
